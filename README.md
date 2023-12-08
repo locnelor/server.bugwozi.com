@@ -1,4 +1,4 @@
-# 初始化nest-apollo服务端
+# Bug窝子服务器后端
 
 - ORM: Prisma
 - Cache: Redis
@@ -9,7 +9,7 @@
 ## env配置示例
 
 ```
-DATABASE_URL = "mysql://root:root1234@localhost:3306/init_apollo"
+DATABASE_URL = "mysql://root:root1234@localhost:3306/bugwozi"
 PORT = 14500
 JWT_SECRET = "sbppk"
 
