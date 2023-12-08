@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
-import { EmailModule } from './email/email.module';
+import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
@@ -25,9 +25,7 @@ import { EmailModule } from './email/email.module';
         REDIS_PORT: Joi.number().default(6379),
         REDIS_HOST: Joi.string().default("localhost"),
         REDIS_PASSWORD: Joi.string(),
-        CACHE_TTL: Joi.number().default(6 * 60 * 60),
-        EMAIL_USER: Joi.string(),
-        EMAIL_PASS: Joi.string(),
+        CACHE_TTL: Joi.number().default(6 * 60 * 60)
       })
     }),
     GraphQLModule.forRoot({
@@ -50,7 +48,7 @@ import { EmailModule } from './email/email.module';
     AuthModule,
     PrismaModule,
     UserModule,
-    EmailModule,
+    TestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

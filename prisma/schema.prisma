@@ -10,171 +10,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model UserModel {
-  id             Int                @id @default(autoincrement())
-  createAt       DateTime           @default(now())
-  updateAt       DateTime           @default(now()) @updatedAt
-  hash_key       String             @unique
-  classesModelId Int?
-  address        String?            @unique
-  name           String?
-  profile        ProfileModel?
-  article        ArticleModel[]
-  collection     CollectionModel[]
-  classes        ClassesModel?      @relation(fields: [classesModelId], references: [id])
-  message        MessageModel[]
-  classesWork    ClassesWorkModel[]
-  comment        CommentModel[]
-  TaskModel      TaskModel[]
-  CalendarModel  CalendarModel[]
+model User {
+  id       Int       @id @default(autoincrement())
+  createAt DateTime  @default(now())
+  updateAt DateTime  @default(now()) @updatedAt
+  profile  Profile?
+  name     String?
+  article  Article[]
+  comment  Comment[]
 }
 
-model CalendarModel {
-  id          Int       @id @default(autoincrement())
-  time        DateTime  @default(now())
-  updateAt    DateTime  @default(now()) @updatedAt
-  user        UserModel @relation(fields: [userModelId], references: [id])
-  userModelId Int
+model Profile {
+  id       Int      @id @default(autoincrement())
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int      @unique
+  password String
+  email    String  @unique
+  qq       String?  @unique
+  phone    String?  @unique
 }
 
-model ProfileModel {
-  id          Int       @id @default(autoincrement())
-  lastLogin   DateTime  @default(now())
-  user        UserModel @relation(fields: [userModelId], references: [id])
-  userModelId Int       @unique
-  email       String    @unique
-  qq          String?
-  wechat      String?
-  password    String
-  role        BigInt    @default(1)
-  //1是否设置地址
-  //
+model Article {
+  id           Int            @id @default(autoincrement())
+  createAt     DateTime       @default(now())
+  updateAt     DateTime       @default(now()) @updatedAt
+  user         User           @relation(fields: [userId], references: [id])
+  userId       Int
+  articleOntag ArticleOntag[]
 }
 
-model ArticleModel {
-  id                    Int                     @id @default(autoincrement())
-  createAt              DateTime                @default(now())
-  updateAt              DateTime                @default(now()) @updatedAt
-  hash_key              String                  @unique
-  author                UserModel               @relation(fields: [userModelId], references: [id])
-  userModelId           Int
-  visible               Boolean                 @default(true)
-  subject               String                  @db.VarChar(40)
-  description           String?                 @db.Text
-  classification        ClassificationModel     @relation(fields: [classificationModelId], references: [id])
-  classificationModelId Int
-  startCount            Int                     @default(0)
-  view                  Int                     @default(0)
-  collection            CollectionModel[]
-  articleOnKeyword      ArticleOnKeywordModel[]
-  comment               CommentModel[]
+model ArticleOntag {
+  article   Article @relation(fields: [articleId], references: [id])
+  articleId Int
+  tag       Tag     @relation(fields: [tagId], references: [id])
+  tagId     Int
+
+  @@id([tagId, articleId])
 }
 
-model ClassificationModel {
-  id      Int            @id @default(autoincrement())
-  name    String         @unique
-  article ArticleModel[]
+model Tag {
+  id           Int            @id @default(autoincrement())
+  name         String
+  articleOntag ArticleOntag[]
 }
 
-model KeywordModel {
-  id               Int                     @id @default(autoincrement())
-  name             String                  @unique
-  articleOnKeyword ArticleOnKeywordModel[]
-}
-
-// ---- debug ---
-model ArticleOnKeywordModel {
-  article        ArticleModel @relation(fields: [articleModelId], references: [id])
-  articleModelId Int
-  keyword        KeywordModel @relation(fields: [keywordModelId], references: [id])
-  keywordModelId Int
-
-  @@id([articleModelId, keywordModelId])
-}
-
-model CommentModel {
-  id             Int            @id @default(autoincrement())
-  createAt       DateTime       @default(now())
-  updateAt       DateTime       @default(now()) @updatedAt
-  user           UserModel      @relation(fields: [userModelId], references: [id])
-  userModelId    Int
-  article        ArticleModel   @relation(fields: [articleModelId], references: [id], onDelete: Cascade)
-  articleModelId Int
-  parent         CommentModel?  @relation("CommentToReply", fields: [parentId], references: [id])
-  parentId       Int?
-  replies        CommentModel[] @relation("CommentToReply")
-}
-
-model CollectionModel {
-  id             Int           @id @default(autoincrement())
-  createAt       DateTime      @default(now())
-  updateAt       DateTime      @default(now()) @updatedAt
-  user           UserModel     @relation(fields: [userModelId], references: [id])
-  userModelId    Int
-  article        ArticleModel? @relation(fields: [articleModelId], references: [id], onDelete: SetNull)
-  articleModelId Int?
-}
-
-model ClassesModel {
-  id          Int                @id @default(autoincrement())
-  createAt    DateTime           @default(now())
-  updateAt    DateTime           @default(now()) @updatedAt
-  name        String             @unique
-  user        UserModel[]
-  description String?            @db.Text
-  hash_key    String             @unique
-  classesTask ClassesTaskModel[]
-}
-
-model MessageModel {
-  id          Int       @id @default(autoincrement())
-  createAt    DateTime  @default(now())
-  updateAt    DateTime  @default(now()) @updatedAt
-  context     String    @db.Text
-  user        UserModel @relation(fields: [userModelId], references: [id])
-  userModelId Int
-}
-
-model ClassesTaskModel {
-  id             Int             @id @default(autoincrement())
-  createAt       DateTime        @default(now())
-  updateAt       DateTime        @default(now()) @updatedAt
-  classes        ClassesModel    @relation(fields: [classesModelId], references: [id], onDelete: Cascade)
-  classesModelId Int
-  hash_key       String          @unique
-  subject        String
-  begin          DateTime
-  end            DateTime
-  roles          TaskRoleModel[]
-  taskModel      TaskModel[]
-}
-
-model TaskRoleModel {
-  id                 Int              @id @default(autoincrement())
-  type               Int
-  target             ClassesTaskModel @relation(fields: [classesTaskModelId], references: [id], onDelete: Cascade)
-  classesTaskModelId Int
-  value              String
-  description        String?
-  name               String
-  isUnique           Boolean          @default(false)
-  visible            Boolean          @default(false)
-}
-
-model TaskModel {
-  id                 Int              @id @default(autoincrement())
-  createAt           DateTime         @default(now())
-  updateAt           DateTime         @default(now()) @updatedAt
-  task               ClassesTaskModel @relation(fields: [classesTaskModelId], references: [id], onDelete: Cascade)
-  classesTaskModelId Int
-  user               UserModel        @relation(fields: [userModelId], references: [id])
-  userModelId        Int
-}
-
-model ClassesWorkModel {
-  id          Int       @id @default(autoincrement())
-  createAt    DateTime  @default(now())
-  updateAt    DateTime  @default(now()) @updatedAt
-  user        UserModel @relation(fields: [userModelId], references: [id])
-  userModelId Int
+model Comment {
+  id       Int      @id @default(autoincrement())
+  createAt DateTime @default(now())
+  updateAt DateTime @default(now()) @updatedAt
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int
 }

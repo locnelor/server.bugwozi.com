@@ -1,72 +1,63 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from 'src/user/entities/user.entity';
 import { GqlAuthGuard, GqlCurrentUser } from './auth.guard';
 import { cryptoPassword } from 'src/libs/hash';
 import { ForbiddenError } from '@nestjs/apollo';
 import { AuthService } from './auth.service';
 import { Test } from './entitys/test.entity';
+import { UserEntity } from 'src/user/user.entity';
 
-@Resolver(of => User)
+@Resolver(of => UserEntity)
 export class AuthResolver {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly authService: AuthService
     ) { }
 
-    @Query(() => User)
+    @Query(() => UserEntity)
     @UseGuards(GqlAuthGuard)
     getInfo(
-        @GqlCurrentUser() user: User
+        @GqlCurrentUser() user: UserEntity
     ) {
         console.log(user)
         return user;
     }
 
-    @Query(() => User)
-    @UseGuards(GqlAuthGuard)
-    async auth(
-        @Args("account") account: string,
+    @Mutation(() => UserEntity)
+    async loginEmailPassword(
+        @Args("email") email: string,
         @Args("password") password: string
     ) {
-        const user: User = await this.prismaService.user.findUnique({
+        const user: UserEntity = await this.prismaService.user.findFirst({
             where: {
-                account,
                 profile: {
-                    password: cryptoPassword(password)
+                    email
                 }
             },
             include: {
                 profile: true
             }
         })
-        if (!user) throw ForbiddenError
-        user.token = this.authService.getToken(user).access_token
-        return user;
-    }
-
-    @Mutation(() => User)
-    async sigin(
-        @Args("account") account: string,
-        @Args("password") password: string
-    ) {
-        const user: User = await this.prismaService.user.create({
-            data: {
-                account,
-                profile: {
-                    create: {
-                        password: cryptoPassword(password)
+        const pwd = cryptoPassword(password);
+        if (!user) {
+            const res: UserEntity = await this.prismaService.user.create({
+                data: {
+                    profile: {
+                        create: {
+                            email,
+                            password: pwd
+                        }
                     }
                 }
-            },
-            include: {
-                profile: true
-            }
-        })
-        if (!user) throw ForbiddenError
-        user.token = this.authService.getToken(user).access_token
-        return user
+            })
+            res.token = this.authService.getToken(res).access_token;
+            return res;
+            throw new ForbiddenError("Not found")
+        }
+        if (user.profile.password !== pwd) throw new ForbiddenError("Password error")
+        user.token = this.authService.getToken(user).access_token;
+        return user;
     }
 
     @Query(() => Test)
@@ -77,7 +68,7 @@ export class AuthResolver {
         }
     }
 
-    @Query(() => [User])
+    @Query(() => [UserEntity])
     userList() {
         return this.prismaService.user.findMany({
             orderBy: {
@@ -88,5 +79,4 @@ export class AuthResolver {
             }
         })
     }
-
 }
