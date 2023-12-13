@@ -150,3 +150,12 @@ export const PowerKGNB: PowerEnum = [9, 9]
  * 11 可编辑他人动态
  */
 export const PowerDynamic: PowerEnum = [10, 11]
+
+/**
+ * 3 群组权限
+ * 00 不可创建群组
+ * 01 可编辑群组
+ * 10 可创建群组
+ * 11 可编辑他人群组
+ */
+export const PowerGroup: PowerEnum = [12, 13]

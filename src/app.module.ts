@@ -14,6 +14,7 @@ import { TestModule } from './test/test.module';
 import { KgnbModule } from './kgnb/kgnb.module';
 import { DynamicModule } from './dynamic/dynamic.module';
 import { CommentModule } from './comment/comment.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -46,6 +47,17 @@ import { CommentModule } from './comment/comment.module';
           },
         };
       },
+      // plugins: [{
+      //   plugin: Cache,
+      //   options: {
+      //     ttl: 10,
+      //     policy: {
+      //       Query: {
+      //         add: true
+      //       }
+      //     }
+      //   }
+      // }]
     }),
     RedisCacheModule,
     AuthModule,
@@ -55,6 +67,7 @@ import { CommentModule } from './comment/comment.module';
     KgnbModule,
     // DynamicModule,
     CommentModule,
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

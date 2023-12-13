@@ -11,16 +11,54 @@ datasource db {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  createAt DateTime   @default(now())
-  updateAt DateTime   @default(now()) @updatedAt
-  role     Int        @default(0)
-  profile  Profile?
-  name     String?
-  article  Article[]
-  comment  Comment[]
-  Dynamic  Dynamic[]
-  test6666 test6666[]
+  id          Int           @id @default(autoincrement())
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @default(now()) @updatedAt
+  role        Int           @default(0)
+  address     String?
+  profile     Profile?
+  name        String?
+  article     Article[]
+  comment     Comment[]
+  dynamic     Dynamic[]
+  userOnGroup UserOnGroup[]
+  group       Group[]
+  Message     Message[]
+}
+
+model UserOnGroup {
+  user     User    @relation(fields: [userId], references: [id])
+  group    Group   @relation(fields: [groupId], references: [id])
+  userId   Int
+  groupId  Int
+  isAdmin  Boolean @default(false)
+  isBan    Boolean @default(false)
+  hash_key String  @unique
+
+  @@id([userId, groupId])
+}
+
+model Group {
+  id          Int           @id @default(autoincrement())
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @default(now()) @updatedAt
+  name        String
+  description String?
+  userOnGroup UserOnGroup[]
+  leader      User          @relation(fields: [userId], references: [id])
+  message     Message[]
+  userId      Int
+}
+
+model Message {
+  id       Int      @id @default(autoincrement())
+  createAt DateTime @default(now())
+  updateAt DateTime @default(now()) @updatedAt
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int
+  group    Group    @relation(fields: [groupId], references: [id])
+  groupId  Int
+  context  String   @db.Text
 }
 
 model Dynamic {
@@ -36,15 +74,6 @@ model Dynamic {
   commentId Int
 }
 
-model test6666 {
-  id       Int      @id @default(autoincrement())
-  createAt DateTime @default(now())
-  updateAt DateTime @default(now()) @updatedAt
-  name     String
-  user     User     @relation(fields: [userId], references: [id])
-  userId   Int
-}
-
 model KGNB {
   id       Int      @id @default(autoincrement())
   createAt DateTime @default(now())
@@ -58,7 +87,7 @@ model Profile {
   user     User    @relation(fields: [userId], references: [id])
   userId   Int     @unique
   password String
-  email    String  @unique
+  email    String? @unique
   qq       String? @unique
   phone    String? @unique
 }
@@ -93,5 +122,5 @@ model Comment {
   updateAt DateTime  @default(now()) @updatedAt
   user     User      @relation(fields: [userId], references: [id])
   userId   Int
-  Dynamic  Dynamic[]
+  dynamic  Dynamic[]
 }
