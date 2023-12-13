@@ -6,7 +6,6 @@ import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'src/user/user.module';
-import { RedisCacheModule } from 'src/redis-cache/redis-cache.module';
 import { AuthController } from './auth.controller';
 
 @Module({
@@ -25,7 +24,6 @@ import { AuthController } from './auth.controller';
       },
       inject: [ConfigService]
     }),
-    RedisCacheModule,
     UserModule
   ],
   controllers: [
