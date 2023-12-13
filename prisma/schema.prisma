@@ -14,20 +14,29 @@ model User {
   id       Int       @id @default(autoincrement())
   createAt DateTime  @default(now())
   updateAt DateTime  @default(now()) @updatedAt
+  role     Int       @default(0)
   profile  Profile?
   name     String?
   article  Article[]
   comment  Comment[]
 }
 
-model Profile {
+model KGNB {
   id       Int      @id @default(autoincrement())
-  user     User     @relation(fields: [userId], references: [id])
-  userId   Int      @unique
+  createAt DateTime @default(now())
+  updateAt DateTime @default(now()) @updatedAt
+  context  String   @db.Text
+  commit   String?  @db.Text
+}
+
+model Profile {
+  id       Int     @id @default(autoincrement())
+  user     User    @relation(fields: [userId], references: [id])
+  userId   Int     @unique
   password String
   email    String  @unique
-  qq       String?  @unique
-  phone    String?  @unique
+  qq       String? @unique
+  phone    String? @unique
 }
 
 model Article {
