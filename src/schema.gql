@@ -35,6 +35,18 @@ type TestEntity {
   ranStr: String!
 }
 
+type PostEntity {
+  id: Int!
+  createAt: DateTime!
+  updateAt: DateTime!
+  userId: Int!
+  user: UserEntity!
+  title: String!
+  hash_key: String!
+  subTitle: String!
+  context: String
+}
+
 type Query {
   getInfo: UserEntity!
   test: Test!
@@ -48,4 +60,5 @@ type Mutation {
   loginEmailPassword(email: String!, password: String!): UserEntity!
   getTestMutation(ranStrLen: Float!, num: Float!, count: Float!): [TestEntity!]!
   getErrorMutation: TestEntity!
+  publishPost(title: String!, subTitle: String!, context: String!, tags: String!): PostEntity!
 }

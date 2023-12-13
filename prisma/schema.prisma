@@ -16,42 +16,45 @@ model User {
   updateAt DateTime  @default(now()) @updatedAt
   profile  Profile?
   name     String?
-  article  Article[]
+  posts    Posts[]
   comment  Comment[]
 }
 
 model Profile {
-  id       Int      @id @default(autoincrement())
-  user     User     @relation(fields: [userId], references: [id])
-  userId   Int      @unique
+  id       Int     @id @default(autoincrement())
+  user     User    @relation(fields: [userId], references: [id])
+  userId   Int     @unique
   password String
   email    String  @unique
-  qq       String?  @unique
-  phone    String?  @unique
+  qq       String? @unique
+  phone    String? @unique
 }
 
-model Article {
-  id           Int            @id @default(autoincrement())
-  createAt     DateTime       @default(now())
-  updateAt     DateTime       @default(now()) @updatedAt
-  user         User           @relation(fields: [userId], references: [id])
-  userId       Int
-  articleOntag ArticleOntag[]
+model Posts {
+  id         Int          @id @default(autoincrement())
+  createAt   DateTime     @default(now())
+  updateAt   DateTime     @default(now()) @updatedAt
+  user       User         @relation(fields: [userId], references: [id])
+  userId     Int
+  postsOntag PostsOnTag[]
+  title      String
+  hash_key   String       @unique
+  subTitle   String       @db.Text
 }
 
-model ArticleOntag {
-  article   Article @relation(fields: [articleId], references: [id])
-  articleId Int
-  tag       Tag     @relation(fields: [tagId], references: [id])
-  tagId     Int
+model PostsOnTag {
+  post   Posts @relation(fields: [postId], references: [id])
+  postId Int
+  tag    Tag   @relation(fields: [tagId], references: [id])
+  tagId  Int
 
-  @@id([tagId, articleId])
+  @@id([tagId, postId])
 }
 
 model Tag {
-  id           Int            @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
   name         String
-  articleOntag ArticleOntag[]
+  articleOntag PostsOnTag[]
 }
 
 model Comment {
@@ -60,4 +63,5 @@ model Comment {
   updateAt DateTime @default(now()) @updatedAt
   user     User     @relation(fields: [userId], references: [id])
   userId   Int
+  name     String   @unique
 }
