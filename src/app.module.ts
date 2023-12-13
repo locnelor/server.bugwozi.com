@@ -61,7 +61,7 @@ import { GroupModule } from './group/group.module';
       //   }
       // }]
     }),
-    RedisCacheModule,
+    // RedisCacheModule,
     AuthModule,
     PrismaModule,
     UserModule,
