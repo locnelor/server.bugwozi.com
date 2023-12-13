@@ -19,11 +19,21 @@ model User {
   posts       Posts[]
   comment     Comment[]
   role        Int           @default(0)
-  address     String?
+  address     String        @unique
   dynamic     Dynamic[]
   userOnGroup UserOnGroup[]
   group       Group[]
   Message     Message[]
+}
+
+model Profile {
+  id       Int     @id @default(autoincrement())
+  user     User    @relation(fields: [userId], references: [id])
+  userId   Int     @unique
+  password String
+  email    String? @unique
+  qq       String? @unique
+  phone    String? @unique
 }
 
 model UserOnGroup {
@@ -62,16 +72,28 @@ model Message {
 }
 
 model Dynamic {
+  id       Int       @id @default(autoincrement())
+  createAt DateTime  @default(now())
+  updateAt DateTime  @default(now()) @updatedAt
+  priv     Boolean   @default(true)
+  title    String
+  user     User      @relation(fields: [userId], references: [id])
+  userId   Int
+  view     Int       @default(0)
+  comments Comment[]
+}
+
+model Comment {
   id        Int      @id @default(autoincrement())
   createAt  DateTime @default(now())
   updateAt  DateTime @default(now()) @updatedAt
-  priv      Boolean  @default(true)
-  title     String
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  view      Int      @default(0)
-  comment   Comment  @relation(fields: [commentId], references: [id])
-  commentId Int
+  context   String   @db.Text
+  Dynamic   Dynamic? @relation(fields: [dynamicId], references: [id])
+  dynamicId Int?
+  Posts     Posts?   @relation(fields: [postsId], references: [id])
+  postsId   Int?
 }
 
 model KGNB {
@@ -80,16 +102,6 @@ model KGNB {
   updateAt DateTime @default(now()) @updatedAt
   context  String   @db.Text
   commit   String?  @db.Text
-}
-
-model Profile {
-  id       Int     @id @default(autoincrement())
-  user     User    @relation(fields: [userId], references: [id])
-  userId   Int     @unique
-  password String
-  email    String  @unique
-  qq       String? @unique
-  phone    String? @unique
 }
 
 model Posts {
@@ -102,6 +114,7 @@ model Posts {
   title      String
   hash_key   String       @unique
   subTitle   String       @db.Text
+  comments   Comment[]
 }
 
 model PostsOnTag {
@@ -114,17 +127,7 @@ model PostsOnTag {
 }
 
 model Tag {
-  id           Int          @id @default(autoincrement())
-  name         String
-  articleOntag PostsOnTag[]
-}
-
-model Comment {
-  id       Int       @id @default(autoincrement())
-  createAt DateTime  @default(now())
-  updateAt DateTime  @default(now()) @updatedAt
-  user     User      @relation(fields: [userId], references: [id])
-  userId   Int
-  name     String    @unique
-  dynamic  Dynamic[]
+  id         Int          @id @default(autoincrement())
+  name       String
+  postsOnTag PostsOnTag[]
 }
