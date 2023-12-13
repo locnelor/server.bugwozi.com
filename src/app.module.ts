@@ -12,6 +12,8 @@ import { UserModule } from './user/user.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
 import { TestModule } from './test/test.module';
 import { KgnbModule } from './kgnb/kgnb.module';
+import { DynamicModule } from './dynamic/dynamic.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -51,6 +53,8 @@ import { KgnbModule } from './kgnb/kgnb.module';
     UserModule,
     TestModule,
     KgnbModule,
+    // DynamicModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

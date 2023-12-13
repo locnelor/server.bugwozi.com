@@ -112,7 +112,6 @@ type PowerEnum = [number, number];
 export const PowerAccount: PowerEnum = [0, 1];
 
 
-
 /**
  * 7 权限大小
  * 权限优先级，111（7）为最高权限。000为失效
@@ -142,3 +141,12 @@ export const PowerCommit: PowerEnum = [7, 8]
  * 1 KGNB语录编辑权限
  */
 export const PowerKGNB: PowerEnum = [9, 9]
+
+/**
+ * 3 动态权限
+ * 00 不可发布动态
+ * 01 可编辑动态
+ * 10 可发布动态
+ * 11 可编辑他人动态
+ */
+export const PowerDynamic: PowerEnum = [10, 11]
