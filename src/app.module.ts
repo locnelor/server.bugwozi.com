@@ -11,6 +11,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
 import { TestModule } from './test/test.module';
+import { KgnbModule } from './kgnb/kgnb.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { TestModule } from './test/test.module';
     PrismaModule,
     UserModule,
     TestModule,
+    KgnbModule,
   ],
   controllers: [AppController],
   providers: [AppService],
