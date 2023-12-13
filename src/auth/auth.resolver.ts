@@ -25,15 +25,13 @@ export class AuthResolver {
     }
 
     @Mutation(() => UserEntity)
-    async loginEmailPassword(
-        @Args("email") email: string,
+    async loginAddressPassword(
+        @Args("address") address: string,
         @Args("password") password: string
     ) {
         const user: UserEntity = await this.prismaService.user.findFirst({
             where: {
-                profile: {
-                    email
-                }
+                address
             },
             include: {
                 profile: true
@@ -43,9 +41,9 @@ export class AuthResolver {
         if (!user) {
             const res: UserEntity = await this.prismaService.user.create({
                 data: {
+                    address,
                     profile: {
                         create: {
-                            email,
                             password: pwd
                         }
                     }
