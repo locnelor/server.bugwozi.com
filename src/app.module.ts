@@ -9,11 +9,9 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
-import { RedisCacheModule } from './redis-cache/redis-cache.module';
 import { TestModule } from './test/test.module';
 import { PostsModule } from './posts/posts.module';
 import { KgnbModule } from './kgnb/kgnb.module';
-import { DynamicModule } from './dynamic/dynamic.module';
 import { CommentModule } from './comment/comment.module';
 import { GroupModule } from './group/group.module';
 
