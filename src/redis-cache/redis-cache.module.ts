@@ -19,7 +19,7 @@ import { redisStore } from 'cache-manager-redis-store';
               port: config.get("REDIS_PORT")
             },
             password: config.get("REDIS_PASSWORD"),
-            database: 6
+            database: config.get("REDIS_DB")
           })
         })
       }

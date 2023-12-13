@@ -14,6 +14,7 @@ import { PostsModule } from './posts/posts.module';
 import { KgnbModule } from './kgnb/kgnb.module';
 import { CommentModule } from './comment/comment.module';
 import { GroupModule } from './group/group.module';
+import { RedisCacheModule } from './redis-cache/redis-cache.module';
 
 
 @Module({
@@ -29,7 +30,8 @@ import { GroupModule } from './group/group.module';
         REDIS_PORT: Joi.number().default(6379),
         REDIS_HOST: Joi.string().default("localhost"),
         REDIS_PASSWORD: Joi.string(),
-        CACHE_TTL: Joi.number().default(6 * 60 * 60)
+        CACHE_TTL: Joi.number().default(6 * 60 * 60),
+        REDIS_DB: Joi.number()
       })
     }),
     GraphQLModule.forRoot({
@@ -59,7 +61,7 @@ import { GroupModule } from './group/group.module';
       //   }
       // }]
     }),
-    // RedisCacheModule,
+    RedisCacheModule,
     AuthModule,
     PrismaModule,
     UserModule,
