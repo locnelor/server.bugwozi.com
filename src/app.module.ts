@@ -14,7 +14,6 @@ import { PostsModule } from './posts/posts.module';
 import { KgnbModule } from './kgnb/kgnb.module';
 import { CommentModule } from './comment/comment.module';
 import { GroupModule } from './group/group.module';
-import { RedisCacheModule } from './redis-cache/redis-cache.module';
 
 
 @Module({
@@ -61,7 +60,6 @@ import { RedisCacheModule } from './redis-cache/redis-cache.module';
       //   }
       // }]
     }),
-    RedisCacheModule,
     AuthModule,
     PrismaModule,
     UserModule,
