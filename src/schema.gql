@@ -21,6 +21,7 @@ type UserEntity {
   updateAt: DateTime!
   name: String
   token: String
+  role: Float!
   profile: ProfileEntity
 }
 
@@ -35,6 +36,14 @@ type TestEntity {
   ranStr: String!
 }
 
+type KGNBEntity {
+  id: Int!
+  createAt: DateTime!
+  updateAt: DateTime!
+  context: String!
+  commit: String
+}
+
 type Query {
   getInfo: UserEntity!
   test: Test!
@@ -42,10 +51,17 @@ type Query {
   viewer: UserEntity!
   getTestQuery: TestEntity!
   getErrorQuery: TestEntity!
+  accountPower: TestEntity!
+  commitPower: TestEntity!
+  powerSize: TestEntity!
+  getRandomKGNB: [KGNBEntity!]!
+  getAllKGNB: [KGNBEntity!]!
 }
 
 type Mutation {
   loginEmailPassword(email: String!, password: String!): UserEntity!
   getTestMutation(ranStrLen: Float!, num: Float!, count: Float!): [TestEntity!]!
   getErrorMutation: TestEntity!
+  insertKGNB(context: String!, commit: String): KGNBEntity!
+  updateKGNB(id: Float!, context: String!, commit: String): KGNBEntity!
 }
