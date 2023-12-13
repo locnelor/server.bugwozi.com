@@ -15,14 +15,25 @@ type ProfileEntity {
   userId: Float!
 }
 
-type UserEntity {
+type UserOnGroupEntity {
+  userId: Int!
+  user: UserEntity
+  groupId: Int!
+  group: GroupEntity
+  isAdmin: Boolean!
+  isBan: Boolean!
+  hash_key: String!
+}
+
+type GroupEntity {
   id: Int!
   createAt: DateTime!
   updateAt: DateTime!
-  name: String
-  token: String
-  role: Float!
-  profile: ProfileEntity
+  name: String!
+  description: String
+  userOnGroup: UserOnGroupEntity!
+  leader: UserEntity!
+  userId: Int!
 }
 
 """
@@ -30,10 +41,34 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type UserEntity {
+  id: Int!
+  createAt: DateTime!
+  updateAt: DateTime!
+  address: String!
+  group: [GroupEntity!]
+  name: String
+  token: String
+  role: Float!
+  profile: ProfileEntity
+}
+
 type TestEntity {
   id: Int!
   random: Float!
   ranStr: String!
+}
+
+type PostEntity {
+  id: Int!
+  createAt: DateTime!
+  updateAt: DateTime!
+  userId: Int!
+  user: UserEntity!
+  title: String!
+  hash_key: String!
+  subTitle: String!
+  context: String
 }
 
 type KGNBEntity {
@@ -56,12 +91,20 @@ type Query {
   powerSize: TestEntity!
   getRandomKGNB: [KGNBEntity!]!
   getAllKGNB: [KGNBEntity!]!
+  getMyGroup: [GroupEntity!]!
+  getGroupByUser(id: Float!): [GroupEntity!]!
 }
 
 type Mutation {
-  loginEmailPassword(email: String!, password: String!): UserEntity!
+  loginAddressPassword(address: String!, password: String!): UserEntity!
   getTestMutation(ranStrLen: Float!, num: Float!, count: Float!): [TestEntity!]!
   getErrorMutation: TestEntity!
+  publishPost(title: String!, subTitle: String!, context: String!, tags: String!): PostEntity!
   insertKGNB(context: String!, commit: String): KGNBEntity!
   updateKGNB(id: Float!, context: String!, commit: String): KGNBEntity!
+  createGroup(name: String!, description: String): GroupEntity!
+  updateGroup(id: Float!, name: String!, description: String): GroupEntity!
+  updateOtherGroup(id: Float!, name: String!, description: String): GroupEntity!
+  deleteGroup(id: Float!): GroupEntity!
+  deleteOtherGroup(id: Float!): GroupEntity!
 }

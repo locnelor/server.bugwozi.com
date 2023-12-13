@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Group, UserOnGroup } from "@prisma/client";
 import { BaseEntity } from "src/base.entity";
 import { UserEntity } from "src/user/user.entity";
+import { UserOnGroupEntity } from "./groupOnUser.entity";
 
 
 
@@ -23,26 +24,3 @@ export class GroupEntity extends BaseEntity implements Group {
     userId: number;
 }
 
-@ObjectType()
-export class UserOnGroupEntity implements UserOnGroup {
-    @Field(() => Int)
-    userId: number;
-
-    @Field(() => UserEntity, { nullable: true })
-    user: UserEntity
-
-    @Field(() => Int)
-    groupId: number;
-
-    @Field(() => GroupEntity, { nullable: true })
-    group: GroupEntity
-
-    @Field()
-    isAdmin: boolean;
-
-    @Field()
-    isBan: boolean;
-
-    @Field()
-    hash_key: string
-}

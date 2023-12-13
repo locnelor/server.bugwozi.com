@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { GqlAuthPowerGuard, GqlCurrentUser, PowerGroup } from 'src/auth/auth.guard';
+import { CurrentUser, GqlAuthPowerGuard, GqlCurrentUser, PowerGroup } from 'src/auth/auth.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserEntity } from 'src/user/user.entity';
 import { GroupEntity } from './group.entity';
@@ -95,12 +95,35 @@ export class GroupResolver {
     }
 
 
-    @Query()
-    getMyGroup() { }
+    @Query(() => [GroupEntity])
+    @UseGuards(new GqlAuthPowerGuard(PowerGroup, 0))
+    getMyGroup(
+        @GqlCurrentUser() user: UserEntity
+    ) {
+        return this.prismaService.group.findMany({
+            where: {
+                userId: user.id
+            }
+        })
+    }
 
-    @Query()
-    getGroupByUser() { }
+    @Query(() => [GroupEntity])
+    getGroupByUser(
+        @Args("id") id: number
+    ) {
+        return this.prismaService.group.findMany({
+            where: {
+                userId: id
+            },
+        })
+    }
 
-    @Query()
-    getUserGroup() { };
+    // @Mutation()
+    // inviteUserToJoinGroup(
+    //     @Args("userId") userId: number,
+    //     @Args("groupId") groupId: number,
+    //     @CurrentUser() user: UserEntity
+    // ) {
+
+    // }
 }
