@@ -37,7 +37,7 @@ import { redisStore } from 'cache-manager-redis-store';
       useFactory: async (...args) => {
         return ({
           store: redisStore,
-          host: 'localhost',
+          host: 'redis',
           port: 6379,
           auth_pass: process.env.redis_password,
           db: 3,// 目标库,
