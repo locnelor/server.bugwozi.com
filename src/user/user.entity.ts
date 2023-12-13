@@ -11,6 +11,9 @@ export class UserEntity extends BaseEntity implements User {
   @Field({ nullable: true })
   token?: string
 
+  @Field()
+  role: number
+
   // @Field()
   // account: string;
 
